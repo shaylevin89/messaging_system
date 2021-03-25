@@ -1,5 +1,6 @@
 from flask import Flask, request
 import logging
+import DB
 
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
@@ -8,8 +9,8 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def hello():
-    return "Hello shay!"
+def root():
+    return DB.rows
 
 
 """
