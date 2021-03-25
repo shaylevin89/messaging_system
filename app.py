@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def root():
-    return DB.rows
+    return str(DB.rows)
 
 
 """
