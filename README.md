@@ -19,14 +19,14 @@ Example- [POST] https://shaymessages.herokuapp.com/login [basic auth] username: 
 Create message- POST request to /message. With JSON body of receiver, subject, msg_data. (have to be logged in)<br>
 Example- [POST] https://shaymessages.herokuapp.com/message [body] {"receiver": "another username", "subject": "message subject", "msg_data": "the message content"}
 
-Read all user messages(sent or received)- GET request to /messages. (have to be logged in)<br>
+Read all user messages (sent or received)- GET request to /messages. (have to be logged in)<br>
 Example- [GET] https://shaymessages.herokuapp.com/messages
 
-Read all unread messages of user(sent or received)- GET request to /unread_messages. (have to be logged in)<br>
+Read all unread messages of user (sent or received)- GET request to /unread_messages. (have to be logged in)<br>
 Example- [GET] https://shaymessages.herokuapp.com/unread_messages
 
-Read one message of user(sent or received)- GET request to /message/<msg_id>. (have to be logged in)<br>
+Read one message of user (sent or received)- GET request to /message/<msg_id>. (have to be logged in)<br>
 Example- [GET] https://shaymessages.herokuapp.com/message/15
 
-Delete one message of user(sent or received)- DELETE request to /message/<msg_id>. (have to be logged in)<br>
+Delete one message of user (sent or received)- DELETE request to /message/<msg_id>. (have to be logged in)<br>
 Example- [GET] https://shaymessages.herokuapp.com/message/18
