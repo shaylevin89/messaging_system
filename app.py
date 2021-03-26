@@ -74,7 +74,7 @@ def write_message(username):
     try:
         msg = request.get_json(force=True)
         if DB.insert_message(
-                username, msg.get('receiver'), msg.get('subject'), msg.get('msg_data'), msg.get('created_at')):
+                username, msg.get('receiver'), msg.get('subject'), msg.get('msg_data'), datetime.datetime.utcnow()):
             return {"message": "Message created"}, 201
         else:
             return {"error": "Wrong message keys or values"}, 400

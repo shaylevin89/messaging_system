@@ -1,0 +1,289 @@
+{
+	"info": {
+		"_postman_id": "bd7275dc-ca56-4a3f-a844-62e216f38bb7",
+		"name": "messaging_system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "read all messages",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{heroku_app1}}/messages",
+					"host": [
+						"{{heroku_app1}}"
+					],
+					"path": [
+						"messages"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read all unread messages",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{heroku_app1}}/unread_messages",
+					"host": [
+						"{{heroku_app1}}"
+					],
+					"path": [
+						"unread_messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "read one message",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{heroku_app1}}/message/16",
+					"host": [
+						"{{heroku_app1}}"
+					],
+					"path": [
+						"message",
+						"16"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "craeate message",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"receiver\": \"marva\",\n    \"msg_data\": \"good luck with Omri!\",\n    \"subject\": \"First date\",\n    \"created_at\": \"2021-03-26 17:20:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{heroku_app1}}/message",
+					"host": [
+						"{{heroku_app1}}"
+					],
+					"path": [
+						"message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"shayarok2\", \"password\": \"slslslsl\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{heroku_app1}}/register",
+					"host": [
+						"{{heroku_app1}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"token\", jsonData.token);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "slslslsl",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "shayarok",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{heroku_app1}}/login",
+					"host": [
+						"{{heroku_app1}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete message",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{heroku_app1}}/message/13",
+					"host": [
+						"{{heroku_app1}}"
+					],
+					"path": [
+						"message",
+						"13"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "Auth-token",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InNoYXlhcm9rIiwiZXhwIjoxNjE2NzYyNzIwfQ.2oRNhWKBQaJU97Mq1T_C7vPIAGKV5qP_v9vyNFKWXY8"
+		},
+		{
+			"key": "heroku_app1",
+			"value": "https://shaymessages.herokuapp.com/"
+		},
+		{
+			"key": "heroku_app",
+			"value": "127.0.0.1:3489"
+		}
+	]
+}
