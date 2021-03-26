@@ -109,6 +109,8 @@ def read_messages(username):
         for message in messages:
             json_messages.append(Message(message).to_json_message())
         return jsonify({'messages': json_messages}), 200
+    if unread:
+        return {"message": "No unread messages for current user"}, 200
     return {"message": "No messages for current user"}, 200
 
 
