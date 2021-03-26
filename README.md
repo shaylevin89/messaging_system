@@ -29,4 +29,4 @@ Read one message of user (sent or received)- GET request to /message/<msg_id>. (
 Example- [GET] https://shaymessages.herokuapp.com/message/15
 
 Delete one message of user (sent or received)- DELETE request to /message/<msg_id>. (have to be logged in)<br>
-Example- [GET] https://shaymessages.herokuapp.com/message/18
+Example- [DELETE] https://shaymessages.herokuapp.com/message/18
