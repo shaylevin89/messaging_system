@@ -11,8 +11,7 @@ Import messaging_system.postman_collection.json to postman<br>
 <h2>API:</h2><br>
 <h3>URL</h3> https://shaymessages.herokuapp.com/<br>
 
-<h3>Create user</h3><br> 
-
+* **Create user**<br>
 Method: POST <br>
 Path: /register  
 Body: JSON object of username and password  {"username": "yourname", "password": "yourpassword"}<br>
@@ -20,8 +19,9 @@ Success response: User created, 200 OK<br>
 Error response: Credentials missing, 400 bad request<br>
 Error response: Username not available, 400 bad request<br>
 
-<h3>Login</h3><br> 
 
+
+* **Login**<br> 
 Method: POST <br>
 Path: /login<br>
 Authorization: basic auth- username and password <br>
@@ -29,8 +29,7 @@ Success response: Token, 200 OK<br>
 Error response: Missing fields, 400 bad request<br>
 Error response: Authentication failed, 400 bad request<br>
 
-<h3>Create message</h3><br> 
-
+* **Create message**<br> 
 Method: POST <br>
 Path: /message<br>
 Body: JSON object of receiver, subject, msg_data. {"receiver": "message_to", "subject": "message_subject", "msg_data": "content"}<br>
@@ -40,24 +39,21 @@ Error response: Wrong message format, only JSON accepted, 400 bad request<br>
 Error response: Message did not insert, 400 bad request<br>
 Error response: Wrong message data, 400 bad request<br>
 
-<h3>Read all user messages</h3><br> 
-
+* **Read all user messages**<br> 
 Method: GET <br>
 Path: /messages<br>
 Authorization: Header with Auth-token key and valid token value <br>
 Success response: Array of user messages, 200 OK<br>
 Success response:No messages for current user, 200 OK<br>
 
-<h3>Read all unread messages of user</h3><br> 
-
+* **Read all unread messages of user**<br> 
 Method: GET <br>
 Path: /unread_messages<br>
 Authorization: Header with Auth-token key and valid token value <br>
 Success response: Array of user unread messages, 200 OK<br>
 Success response:No unread messages for current user, 200 OK<br>
 
-<h3>Read one message</h3><br> 
-
+* **Read one message**<br> 
 Method: GET <br>
 Path: /message/<msg_id><br>
 Authorization: Header with Auth-token key and valid token value <br>
@@ -65,8 +61,7 @@ Success response: JSON message, 200 OK<br>
 Error response: Msg_id not available, 400 bad request<br>
 Error response: Msg_id not valid, 400 bad request<br>
 
-<h3>Delete one message</h3><br> 
-
+* **Delete one message**<br> 
 Method: DELETE <br>
 Path: /message/<msg_id><br>
 Authorization: Header with Auth-token key and valid token value <br>
