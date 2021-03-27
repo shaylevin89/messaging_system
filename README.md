@@ -1,4 +1,4 @@
-# messaging_system
+# Messaging_system
 
 Messaging system API using JWT authentication<br>
 Main server- Python Flask hosting in Heroku on https://shaymessages.herokuapp.com/<br>
