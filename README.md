@@ -9,8 +9,6 @@ Import messaging_system.postman_collection.json to postman<br>
 
 
 <h2>API:</h2><br>
-<h3>URL</h3> https://shaymessages.herokuapp.com/<br>
-
 * **Create user**<br>
 Method: POST <br>
 Path: /register  
