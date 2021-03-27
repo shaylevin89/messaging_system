@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 import logging
 import DB
+import secure
+from Message import Message
 from functools import wraps
 import jwt
 import datetime
@@ -10,22 +12,18 @@ LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 
 app = Flask(__name__)
-app.config['secret'] = os.getenv('JWT_SECRET','abcd1234')
+app.config['secret'] = os.getenv('JWT_SECRET')
+print(app.config['secret'])
 
 
-class Message:
-    def __init__(self, row_message):
-        self.row_message = row_message
-        self.json_message = dict(msg_id=None, sender=None, receiver=None, subject=None, msg_data=None, created_at=None)
-
-    def to_json_message(self):
-        self.json_message['msg_id'] = self.row_message[0]
-        self.json_message['sender'] = self.row_message[1]
-        self.json_message['receiver'] = self.row_message[2]
-        self.json_message['subject'] = self.row_message[3]
-        self.json_message['msg_data'] = self.row_message[4]
-        self.json_message['created_at'] = self.row_message[5]
-        return self.json_message
+def get_messages_id(messages):
+    if len(messages) == 0:
+        return False
+    elif len(messages) == 1:
+        messages_id_tup = '(' + str(messages[0]['msg_id']) + ')'
+    else:
+        messages_id_tup = tuple(message['msg_id'] for message in messages)
+    return messages_id_tup
 
 
 @app.route('/register', methods=['POST'])
@@ -33,20 +31,23 @@ def register():
     credentials = request.get_json(force=True)
     if 'username' not in credentials or 'password' not in credentials:
         return {"error": "Credentials missing"}, 400
-    if DB.create_user(credentials['username'], credentials['password']):
-        return {"message": "User created"}, 200
-    return {"error": "Username not available"}
+    hashed_password = secure.hash_generate(credentials['password'])
+    if DB.create_user(credentials['username'], hashed_password):
+        return {"message": "User created"}, 201
+    return {"error": "Username not available"}, 400
 
 
 @app.route('/login', methods=['POST'])
 def login():
     auth = request.authorization
     if not auth or not auth.username or not auth.password:
-        return {"error": "Authentication required"}, 400
-    if not DB.check_user_credentials(auth.username, auth.password):
+        return {"error": "Missing fields"}, 400
+    db_user = DB.get_user(auth.username)
+    db_user_password = db_user['password']
+    if not secure.login_check(db_user_password, auth.password):
         return {"error": "Authentication failed"}, 400
     token = jwt.encode({'username': auth.username,
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=20)},
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=int(os.getenv('JWT_EXP', 20)))},
                        app.config['secret'], 'HS256')
     return jsonify({'token': token})
 
@@ -58,13 +59,13 @@ def token_required(f):
         if 'Auth-token' in request.headers:
             token = request.headers['Auth-token']
         if not token:
-            return jsonify({'message': 'Token is missing!'}), 401
+            return jsonify({'error': 'Token is missing!'}), 401
         try:
             data = jwt.decode(token, app.config['secret'], 'HS256')
             username = data['username']
         except Exception as e:
             logging.error(e)
-            return jsonify({'message': 'Token is invalid, please login'}), 401
+            return jsonify({'error': 'Token is invalid, please login'}), 401
         return f(username, *args, **kwargs)
     return decorated
 
@@ -73,26 +74,30 @@ def token_required(f):
 @token_required
 def write_message(username):
     try:
-        msg = request.get_json(force=True)
-        if DB.insert_message(
-                username, msg.get('receiver'), msg.get('subject'), msg.get('msg_data'), datetime.datetime.utcnow()):
-            return {"message": "Message created"}, 201
-        else:
-            return {"error": "Wrong message keys or values"}, 400
+        request_body = request.get_json(force=True)
     except Exception as e:
         logging.error(e)
         return {"error": "Wrong message format. only JSON accepted"}, 400
+    message = Message(request_body, username)
+    if message.ready_to_DB():
+        if DB.insert_message(message):
+            return {"message": "Message created"}, 201
+        else:
+            return {"error": "Message did not insert"}, 400
+    return {"error": "Wrong message data"}, 400
 
 
 @app.route("/message/<msg_id>", methods=['GET'])
 @token_required
 def read_message(username, msg_id):
     if msg_id.isdigit():
-        row_message = DB.get_message(msg_id, username)
-        if row_message:
-            json_message = Message(row_message).to_json_message()
+        db_message = DB.get_message(msg_id, username)
+        if db_message:
+            msg_id_tup = '(' + str(msg_id) + ')'
+            DB.update_messages_as_read(msg_id_tup, username)
+            json_message = Message(db_message, username).to_json()
             return jsonify({'message': json_message}), 200
-        return {"error": "Msg_id not found"}, 400
+        return {"error": "Msg_id not available"}, 400
     return {"error": "Msg_id not valid"}, 400
 
 
@@ -101,15 +106,18 @@ def read_message(username, msg_id):
 @token_required
 def read_messages(username):
     path = request.path
-    unread = None
+    unread = False
     if path == '/unread_messages':
         unread = True
-    messages = DB.get_messeges(username, unread)
-    if messages:
-        json_messages = []
-        for message in messages:
-            json_messages.append(Message(message).to_json_message())
-        return jsonify({'messages': json_messages}), 200
+    db_messages = DB.get_messages(username, unread)
+    if db_messages:
+        msg_id_tup = get_messages_id(db_messages)
+        DB.update_messages_as_read(msg_id_tup, username)
+        json_messages_array = []
+        for db_message in db_messages:
+            message = Message(db_message, username).to_json()
+            json_messages_array.append(message)
+        return jsonify({'messages': json_messages_array}), 200
     if unread:
         return {"message": "No unread messages for current user"}, 200
     return {"message": "No messages for current user"}, 200
