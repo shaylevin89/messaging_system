@@ -9,6 +9,7 @@ Import messaging_system.postman_collection.json to postman<br>
 
 
 <h2>API:</h2><br>
+
 * **Create user**<br>
 Method: POST <br>
 Path: /register  
