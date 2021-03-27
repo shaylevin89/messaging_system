@@ -33,7 +33,7 @@ Method: POST <br>
 Path: /message<br>
 Body: JSON object of receiver, subject, msg_data. {"receiver": "message_to", "subject": "message_subject", "msg_data": "content"}<br>
 Authorization: Header with Auth-token key and valid token value <br>
-Success response:Message created, 201 Created<br>
+Success response: Message created, 201 Created<br>
 Error response: Wrong message format, only JSON accepted, 400 bad request<br>
 Error response: Message did not insert, 400 bad request<br>
 Error response: Wrong message data, 400 bad request<br>
@@ -43,14 +43,14 @@ Method: GET <br>
 Path: /messages<br>
 Authorization: Header with Auth-token key and valid token value <br>
 Success response: Array of user messages, 200 OK<br>
-Success response:No messages for current user, 200 OK<br>
+Success response: No messages for current user, 200 OK<br>
 
 * **Read all unread messages of user**<br> 
 Method: GET <br>
 Path: /unread_messages<br>
 Authorization: Header with Auth-token key and valid token value <br>
 Success response: Array of user unread messages, 200 OK<br>
-Success response:No unread messages for current user, 200 OK<br>
+Success response: No unread messages for current user, 200 OK<br>
 
 * **Read one message**<br> 
 Method: GET <br>
