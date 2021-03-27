@@ -4,29 +4,67 @@ Messaging system API using JWT authentication<br>
 Main server- Python Flask hosting in Heroku on https://shaymessages.herokuapp.com/<br>
 Database server- Postgresql hosting in Heroku
 
-<h3>Instructions:</h3>
+<h2>Instructions:</h2>
 Import messaging_system.postman_collection.json to postman<br>
 
 
-<h3>API:</h3>
+<h2>API:</h2><br>
 
-Create user- POST request to /register. With JSON body of username and password<br>
-Example- [POST] https://shaymessages.herokuapp.com/register [body] {"username": "yourName", "password": "abcd1234"}
+* **Create user**<br>
+Method: POST <br>
+Path: /register  
+Body: JSON object of username and password  {"username": "yourname", "password": "yourpassword"}<br>
+Success response: User created, 200 OK<br>
+Error response: Credentials missing, 400 bad request<br>
+Error response: Username not available, 400 bad request<br>
 
-Login- POST request to /login with basic authentication, username and password<br>
-Example- [POST] https://shaymessages.herokuapp.com/login [basic auth] username: yourname, password: abcd1234
 
-Create message- POST request to /message. With JSON body of receiver, subject, msg_data. (have to be logged in)<br>
-Example- [POST] https://shaymessages.herokuapp.com/message [body] {"receiver": "another username", "subject": "message subject", "msg_data": "the message content"}
 
-Read all user messages (sent or received)- GET request to /messages. (have to be logged in)<br>
-Example- [GET] https://shaymessages.herokuapp.com/messages
+* **Login**<br> 
+Method: POST <br>
+Path: /login<br>
+Authorization: basic auth- username and password <br>
+Success response: Token, 200 OK<br>
+Error response: Missing fields, 400 bad request<br>
+Error response: Authentication failed, 400 bad request<br>
 
-Read all unread messages of user (sent or received)- GET request to /unread_messages. (have to be logged in)<br>
-Example- [GET] https://shaymessages.herokuapp.com/unread_messages
+* **Create message**<br> 
+Method: POST <br>
+Path: /message<br>
+Body: JSON object of receiver, subject, msg_data. {"receiver": "message_to", "subject": "message_subject", "msg_data": "content"}<br>
+Authorization: Header with Auth-token key and valid token value <br>
+Success response:Message created, 200 OK<br>
+Error response: Wrong message format, only JSON accepted, 400 bad request<br>
+Error response: Message did not insert, 400 bad request<br>
+Error response: Wrong message data, 400 bad request<br>
 
-Read one message of user (sent or received)- GET request to /message/<msg_id>. (have to be logged in)<br>
-Example- [GET] https://shaymessages.herokuapp.com/message/15
+* **Read all user messages**<br> 
+Method: GET <br>
+Path: /messages<br>
+Authorization: Header with Auth-token key and valid token value <br>
+Success response: Array of user messages, 200 OK<br>
+Success response:No messages for current user, 200 OK<br>
 
-Delete one message of user (sent or received)- DELETE request to /message/<msg_id>. (have to be logged in)<br>
-Example- [DELETE] https://shaymessages.herokuapp.com/message/18
+* **Read all unread messages of user**<br> 
+Method: GET <br>
+Path: /unread_messages<br>
+Authorization: Header with Auth-token key and valid token value <br>
+Success response: Array of user unread messages, 200 OK<br>
+Success response:No unread messages for current user, 200 OK<br>
+
+* **Read one message**<br> 
+Method: GET <br>
+Path: /message/<msg_id><br>
+Authorization: Header with Auth-token key and valid token value <br>
+Success response: JSON message, 200 OK<br>
+Error response: Msg_id not available, 400 bad request<br>
+Error response: Msg_id not valid, 400 bad request<br>
+
+* **Delete one message**<br> 
+Method: DELETE <br>
+Path: /message/<msg_id><br>
+Authorization: Header with Auth-token key and valid token value <br>
+Success response: Message <msg_id> no longer exist, 200 OK<br>
+Error response: Msg_id not valid, 400 bad request<br>
+
+
