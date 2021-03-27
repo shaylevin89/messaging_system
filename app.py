@@ -4,12 +4,13 @@ import DB
 from functools import wraps
 import jwt
 import datetime
+import os
 
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 
 app = Flask(__name__)
-app.config['secret'] = 'shaylevin'
+app.config['secret'] = os.getenv('JWT_SECRET','abcd1234')
 
 
 class Message:
