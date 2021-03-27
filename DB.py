@@ -28,7 +28,7 @@ def insert_message(message):
         return False
 
 
-def get_messages(username, unread):
+def get_messages(username, unread=False):
     if unread:
         cur.execute(
             f"""select * from messages where unread = 't' and (sender = '{username}' or receiver = '{username}');""")
@@ -88,5 +88,3 @@ def get_user(username):
         logging.error(e)
         cur.execute('rollback;')
         return False
-
-

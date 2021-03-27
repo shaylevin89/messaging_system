@@ -100,15 +100,10 @@ def read_message(username, msg_id):
     return {"error": "Msg_id not valid"}, 400
 
 
-@app.route("/unread_messages", methods=['GET'])
 @app.route("/messages", methods=['GET'])
 @token_required
 def read_messages(username):
-    path = request.path
-    unread = False
-    if path == '/unread_messages':
-        unread = True
-    db_messages = DB.get_messages(username, unread)
+    db_messages = DB.get_messages(username)
     if db_messages:
         msg_id_tup = get_messages_id(db_messages)
         DB.update_messages_as_read(msg_id_tup, username)
@@ -117,9 +112,22 @@ def read_messages(username):
             message = Message(db_message, username).to_json()
             json_messages_array.append(message)
         return jsonify({'messages': json_messages_array}), 200
-    if unread:
-        return {"message": "No unread messages for current user"}, 200
     return {"message": "No messages for current user"}, 200
+
+
+@app.route("/unread_messages", methods=['GET'])
+@token_required
+def read_unread_messages(username):
+    db_messages = DB.get_messages(username, unread=True)
+    if db_messages:
+        msg_id_tup = get_messages_id(db_messages)
+        DB.update_messages_as_read(msg_id_tup, username)
+        json_messages_array = []
+        for db_message in db_messages:
+            message = Message(db_message, username).to_json()
+            json_messages_array.append(message)
+        return jsonify({'messages': json_messages_array}), 200
+    return {"message": "No unread messages for current user"}, 200
 
 
 @app.route('/message/<msg_id>', methods=['DELETE'])
