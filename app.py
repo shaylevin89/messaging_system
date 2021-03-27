@@ -13,7 +13,6 @@ logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 
 app = Flask(__name__)
 app.config['secret'] = os.getenv('JWT_SECRET')
-print(app.config['secret'])
 
 
 def get_messages_id(messages):
