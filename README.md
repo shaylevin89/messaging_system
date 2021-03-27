@@ -33,7 +33,7 @@ Method: POST <br>
 Path: /message<br>
 Body: JSON object of receiver, subject, msg_data. {"receiver": "message_to", "subject": "message_subject", "msg_data": "content"}<br>
 Authorization: Header with Auth-token key and valid token value <br>
-Success response:Message created, 200 OK<br>
+Success response:Message created, 201 Created<br>
 Error response: Wrong message format, only JSON accepted, 400 bad request<br>
 Error response: Message did not insert, 400 bad request<br>
 Error response: Wrong message data, 400 bad request<br>
